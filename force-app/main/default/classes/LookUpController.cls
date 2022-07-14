@@ -33,8 +33,12 @@ public with sharing class LookUpController {
         }
     }
     if(recordType!='' && recordType!=null){
+	    if(fieldApiName!='' && fieldApiName!=null){
         sQuery = sQuery = 'SELECT Id,Name,'+ fieldApiName +' FROM ' + sObjectApiName + ' WHERE Name Like : searchText AND RecordtypeId=: strRecordTypeId ORDER BY createdDate DESC LIMIT 10'; 
-    }else if(fieldApiName!='' && fieldApiName!=null) {
+	    }else{
+	    sQuery = sQuery = 'SELECT Id,Name FROM ' + sObjectApiName + ' WHERE Name Like : searchText AND RecordtypeId=: strRecordTypeId ORDER BY createdDate DESC LIMIT 10';
+	    }
+	    }else if(fieldApiName!='' && fieldApiName!=null) {
             sQuery = 'SELECT Id,Name,'+ fieldApiName +' FROM ' + sObjectApiName + ' WHERE Name Like : searchText ORDER BY createdDate DESC LIMIT 10'; 
     }else{
             fieldApiName='';
