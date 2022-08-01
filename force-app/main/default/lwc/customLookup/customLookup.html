@@ -4,7 +4,9 @@
             <!-- Header Label -->
             <template if:true={labelname}>
                 <label class="slds-form-element__label">
+                     <template if:true={strrequired}>
                     <abbr title="required" class="slds-required">*</abbr>
+                    </template>
                     {labelname}
                 </label>
             </template>
