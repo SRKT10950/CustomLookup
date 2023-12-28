@@ -28,7 +28,7 @@ public with sharing class LookUpController {
             }
         }
     }
-    if(isFilter==true){
+    if(filter.size()>0 && isFilter==true){
 	    if(fieldApiName!='' && fieldApiName!=null){
  		sQuery=String.format('SELECT Id,Name,'+ fieldApiName +' FROM ' + sObjectApiName + ' WHERE {0} ORDER BY createdDate DESC LIMIT 10',new list<String>{
         	String.join(filter, ' AND ')});
