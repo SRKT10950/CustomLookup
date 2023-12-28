@@ -26,6 +26,8 @@ export default class CustomLookup extends LightningElement {
     @api recordtype = '';   // Getting record type id from the parent component.
     @api strvalue = ''; // Getting field value from the parent component.
     @api disabled = false; // Getting field disabled value from the parent component.
+    @api isfilter = false;
+    @api filters = [];
     @track strDisabled = false;
     @track search = '';
     @track selectedValue = '';
@@ -45,7 +47,7 @@ export default class CustomLookup extends LightningElement {
      * This is a wire method which is used to get the data from the apex class.
      * @type {String}
      */
-    @wire(getRecords, { searchKey: '$search', sObjectApiName: '$sobjectapiname', qFieldName: '$queryfieldname', recordType: '$recordtype', strRecordId: '$strvalue' })
+    @wire(getRecords, { searchKey: '$search', sObjectApiName: '$sobjectapiname', qFieldName: '$queryfieldname',filter: '$filters', isFilter: '$isfilter', strRecordId: '$strvalue' })
     recordData({ data, error }) {
         if (data) {
             this.records = JSON.parse(data).rcc;
