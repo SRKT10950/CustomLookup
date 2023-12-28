@@ -9,7 +9,8 @@
  * @example
  * <c-custom-lookup placeholder="Search User.." sobjectapiname="Account" queryfieldname="Phone(field label name)" 
     strrequired="true" strvalue="(Account record Id)" icon="standard:account" disabled="false" 
-    labelname="Account Lookup" recordtype="recordtype Name (filter by record type)"></c-custom-lookup>
+    labelname="Account Lookup" filters={filters} isfilter="true" c-custom-lookup>
+ * example filters =['FieldApiName=\'' + Dynamicvalue + '\''];
  */
 import { LightningElement, track, api, wire } from 'lwc';
 import getRecords from '@salesforce/apex/LookUpController.fetchLookupData';
