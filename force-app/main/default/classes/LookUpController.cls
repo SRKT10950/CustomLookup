@@ -11,16 +11,12 @@ public with sharing class LookUpController {
 		* @return Serialized Wrapper Object to JS for Custom Lookup Field, Sends Name and Id
 	*/
     @AuraEnabled(cacheable=true)
-    public static string fetchLookupData(string searchKey , string sObjectApiName, string qFieldName, string recordType) {    
+    public static string fetchLookupData(string searchKey , string sObjectApiName, string qFieldName,list<string> filter, Boolean isFilter) {    
         string sQuery;
         String fieldApiName;
-        string searchText = '%' + searchKey + '%';
+         string searchText = '%' + searchKey + '%';
+       // filter.add('Name Like : searchText');
         SObjectType type = Schema.getGlobalDescribe().get(sObjectApiName);
-
-        if(recordType!=null && recordType!=''){
-            Map<String,Schema.RecordTypeInfo> RecordTypeInfo = Type.getDescribe().getRecordTypeInfosByName();
-            String strRecordTypeId = RecordTypeInfo.get(recordType).getRecordTypeId();
-        }
         if(qFieldName!=null && qFieldName!=''){
     Map<String,Schema.SObjectField> mapfields = type.getDescribe().fields.getMap();
     for(String strField:mapfields.keySet())
@@ -32,15 +28,19 @@ public with sharing class LookUpController {
             }
         }
     }
-    if(recordType!='' && recordType!=null){
+    if(isFilter==true){
 	    if(fieldApiName!='' && fieldApiName!=null){
-            sQuery = 'SELECT Id,Name,'+ fieldApiName +' FROM ' + sObjectApiName + ' WHERE Name Like : searchText AND RecordtypeId=: strRecordTypeId ORDER BY createdDate DESC LIMIT 10'; 
+ 		sQuery=String.format('SELECT Id,Name,'+ fieldApiName +' FROM ' + sObjectApiName + ' WHERE {0} ORDER BY createdDate DESC LIMIT 10',new list<String>{
+        	String.join(filter, ' AND ')});
+           // sQuery = 'SELECT Id,Name,'+ fieldApiName +' FROM ' + sObjectApiName + ' WHERE Name Like : searchText ORDER BY createdDate DESC LIMIT 10'; 
 	    }else{
-	    sQuery = 'SELECT Id,Name FROM ' + sObjectApiName + ' WHERE Name Like : searchText AND RecordtypeId=: strRecordTypeId ORDER BY createdDate DESC LIMIT 10';
+		sQuery=String.format('SELECT Id,Name FROM ' + sObjectApiName + ' WHERE {0} ORDER BY createdDate DESC LIMIT 10',new list<String>{
+        	String.join(filter, ' AND ')});
+	    //sQuery = 'SELECT Id,Name FROM ' + sObjectApiName + ' WHERE Name Like : searchText ORDER BY createdDate DESC LIMIT 10';
 	    }
 	    }else if(fieldApiName!='' && fieldApiName!=null) {
             sQuery = 'SELECT Id,Name,'+ fieldApiName +' FROM ' + sObjectApiName + ' WHERE Name Like : searchText ORDER BY createdDate DESC LIMIT 10'; 
-    }else{
+    	}else{
             fieldApiName='';
                sQuery = 'SELECT Id,Name FROM ' + sObjectApiName + ' WHERE Name Like : searchText ORDER BY createdDate DESC LIMIT 10';
         }
